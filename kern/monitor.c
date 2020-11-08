@@ -27,7 +27,7 @@ static struct Command commands[] = {
 	{"mon_backtrace","information about the stack trace",mon_backtrace},
 };
 
-/***** Implementations of basic kernel monitor commands *****/
+/***** idfdsfdsfd Implementations of basic kernel monitor commands *****/
 
 int
 mon_help(int argc, char **argv, struct Trapframe *tf)

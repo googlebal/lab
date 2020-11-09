@@ -25,6 +25,10 @@ i386_init(void)
 	cons_init();
 
 	cprintf("6828 decimal is %o octal!\n", 6828);
+	
+
+	 unsigned int i = 0x00646c72;
+   	 cprintf("this is my H%x Wo%s", 57616, &i);
 
 	// Lab 2 memory management initialization functions
 	mem_init();

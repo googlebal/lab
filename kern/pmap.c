@@ -103,6 +103,10 @@ boot_alloc(uint32_t n)
 	//
 	// LAB 2: Your code here.
 
+
+
+	cprintf("npages: %d  npages_basemem: %d\n", npages, npages_basemem);
+
 	return NULL;
 }
 

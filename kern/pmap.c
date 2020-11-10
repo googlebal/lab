@@ -5,6 +5,7 @@
 #include <inc/error.h>
 #include <inc/string.h>
 #include <inc/assert.h>
+#include <memlayout.h>
 
 #include <kern/pmap.h>
 #include <kern/kclock.h>
@@ -206,10 +207,10 @@ mem_init(void)
 	// to initialize all fields of each struct PageInfo to 0.
 	// Your code goes here:
 	int i;
-	int info_size= sizeof(PageInfo);
+	int info_size= sizeof PageInfo;
 	int total_size = info_size * npages;
-	pages =(PageInfo *)boot_alloc(total_size);
-	PageInfo* temp = pages;
+	pages =(struct PageInfo *)boot_alloc(total_size);
+	struct PageInfo* temp = pages;
 	for (i = 0; i < npages; i++){
 		memset(temp, 0, info_size);
 		temp++;

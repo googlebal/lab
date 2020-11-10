@@ -13,6 +13,10 @@
 size_t npages;			// Amount of physical memory (in pages)
 static size_t npages_basemem;	// Amount of base memory (in pages)
 
+static size_t beginning_addr;
+static size_t terminal_addr;
+static size_t now_addr;
+
 // These variables are set in mem_init()
 pde_t *kern_pgdir;		// Kernel's initial page directory
 struct PageInfo *pages;		// Physical page state array
@@ -123,9 +127,9 @@ boot_alloc(uint32_t n)
 		goto next;
 	}
 	else {
-		size_t available_size = terminal_addr - no_addr;
+		size_t available_size = terminal_addr - now_addr;
 		if (available_size >= n) {
-			no_addr += n;
+			now_addr += n;
 			result = nextfree + n;
 			goto next;
 		}

@@ -151,11 +151,14 @@ boot_alloc(uint32_t n)
 
 next:
 	result = ROUNDUP(result, PGSIZE);
-	cprintf("npages: %x  npages_basemem: %x beginning_addr:%x terminal_addr:%x  now_addr:%x \n",
-		npages, npages_basemem, beginning_addr, terminal_addr, now_addr);
-
+	cprintf("npages: %x  npages_basemem: %x  terminal_addr:%x  now_addr:%x \n",
+		npages, npages_basemem, terminal_addr, now_addr);
+	
+	char* temp = result;
+	
+	result = nextfree;
+	nextfree = temp;
 	return result;
-
 }
 
 // Set up a two-level page table:
@@ -203,8 +206,13 @@ mem_init(void)
 	// to initialize all fields of each struct PageInfo to 0.
 	// Your code goes here:
 	int i;
-	for (i = 0; i < npages; i++) {
-
+	int info_size= sizeof(PageInfo);
+	int total_size = info_size * npages;
+	pages =(PageInfo *)boot_alloc(total_size);
+	PageInfo* temp = pages;
+	for (i = 0; i < npages; i++){
+		memset(temp, 0, info_size);
+		temp++;
 	}
 	//////////////////////////////////////////////////////////////////////
 	// Now that we've allocated the initial kernel data structures, we set

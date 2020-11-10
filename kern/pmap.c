@@ -126,7 +126,7 @@ boot_alloc(uint32_t n)
 	//	}
 	//}
 	if (!terminal_addr) {
-		size_t kernel_intall = nextfree - 0xf0100000;
+		size_t kernel_intall = nextfree - (char *)0xf0100000;
 		size_t beginning_addr = 0x00100000;
 		size_t total_size = (npages - npages_basemem) * PGSIZE;
 		terminal_addr = beginning_addr + total_size;

@@ -106,27 +106,32 @@ boot_alloc(uint32_t n)
 	// to a multiple of PGSIZE.
 	//
 	// LAB 2: Your code here.
-	extern char entry[];
-	char *entry_addr = (char*)entry;
+	// char entry[];
+	// *entry_addr = (char*)entry;
 	
-	int used = nextfree - entry_addr;
-	cprintf("entry_addr =%x   nextfree= %x  used=%x  \n", entry_addr, nextfree, used);
+	//int used = nextfree - entry_addr;
 	
+	//if (!terminal_addr) {
+	//	if (npages > npages_basemem) {
+	//		beginning_addr = 0x00100000;
+	//		size_t total_size = (npages - npages_basemem) * PGSIZE;
+	//		terminal_addr = beginning_addr + total_size;
+	//		now_addr = beginning_addr;
+	//	}
+	//	else {
+	//		beginning_addr = 0;
+	//		size_t total_size = npages_basemem * PGSIZE;
+	//		terminal_addr = beginning_addr + total_size;
+	//		now_addr = 0;
+	//	}
+	//}
 	if (!terminal_addr) {
-		if (npages > npages_basemem) {
-			beginning_addr = 0x00100000;
-			size_t total_size = (npages - npages_basemem) * PGSIZE;
-			terminal_addr = beginning_addr + total_size;
-			now_addr = beginning_addr;
-		}
-		else {
-			beginning_addr = 0;
-			size_t total_size = npages_basemem * PGSIZE;
-			terminal_addr = beginning_addr + total_size;
-			now_addr = 0;
-		}
+		size_t kernel_intall = nextfree - 0xf0100000;
+		size_t beginning_addr = 0x00100000;
+		size_t total_size = (npages - npages_basemem) * PGSIZE;
+		terminal_addr = beginning_addr + total_size;
+		now_addr = beginning_addr+ kernel_intall;
 	}
-
 	if (n == 0) {
 		result = nextfree;
 		goto next;

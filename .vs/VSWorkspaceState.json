@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
+    "\\boot",
     "\\kern"
   ],
-  "SelectedNode": "\\kern\\pmap.c",
+  "SelectedNode": "\\kern\\kdebug.c",
   "PreviewInSolutionExplorer": false
 }

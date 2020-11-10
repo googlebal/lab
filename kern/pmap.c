@@ -103,11 +103,44 @@ boot_alloc(uint32_t n)
 	//
 	// LAB 2: Your code here.
 
+	if (!terminal_addr) {
+		if (npages > npages_basemem) {
+			beginning_addr = 0x00100000;
+			size_t total_size = (npages - npages_basemem) * PGSIZE;
+			terminal_addr = beginning_addr + total_size;
+			now_addr = beginning_addr;
+		}
+		else {
+			beginning_addr = 0;
+			size_t total_size = npages_basemem * PGSIZE;
+			terminal_addr = beginning_addr + total_size;
+			now_addr = 0;
+		}
+	}
+
+	if (n == 0) {
+		result = nextfree;
+		goto next;
+	}
+	else {
+		size_t available_size = terminal_addr - no_addr;
+		if (available_size >= n) {
+			no_addr += n;
+			result = nextfree + n;
+			goto next;
+		}
+		else {
+			panic("out of memory");
+		}
+	}
 
 
-	cprintf("npages: %d  npages_basemem: %d\n", npages, npages_basemem);
+next:
+	cprintf("npages: %x  npages_basemem: %x beginning_addr:%x terminal_addr:%x  now_addr:%x \n",
+		npages, npages_basemem, beginning_addr, terminal_addr, now_addr);
 
-	return NULL;
+	return result;
+
 }
 
 // Set up a two-level page table:

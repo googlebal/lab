@@ -106,7 +106,12 @@ boot_alloc(uint32_t n)
 	// to a multiple of PGSIZE.
 	//
 	// LAB 2: Your code here.
-
+	extern char entry[];
+	entry_addr = (char*)entry;
+	
+	int used = nextfree - entry_addr;
+	cprintf("entry_addr =%x   nextfree= %x  used=%x ELFHDR->e_entry=%x \n", entry_addr, nextfree, used, ELFHDR->e_entry);
+	
 	if (!terminal_addr) {
 		if (npages > npages_basemem) {
 			beginning_addr = 0x00100000;
@@ -140,6 +145,10 @@ boot_alloc(uint32_t n)
 
 
 next:
+	int align_size=result% PGSIZE;
+	if (!align_size) {
+		result += align_size;
+	}
 	cprintf("npages: %x  npages_basemem: %x beginning_addr:%x terminal_addr:%x  now_addr:%x \n",
 		npages, npages_basemem, beginning_addr, terminal_addr, now_addr);
 
@@ -191,8 +200,10 @@ mem_init(void)
 	// array.  'npages' is the number of physical pages in memory.  Use memset
 	// to initialize all fields of each struct PageInfo to 0.
 	// Your code goes here:
+	int i;
+	for (i = ; i < npages; i++) {
 
-
+	}
 	//////////////////////////////////////////////////////////////////////
 	// Now that we've allocated the initial kernel data structures, we set
 	// up the list of free physical pages. Once we've done so, all further

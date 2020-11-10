@@ -198,7 +198,7 @@ mem_init(void)
 	// to initialize all fields of each struct PageInfo to 0.
 	// Your code goes here:
 	int i;
-	for (i = ; i < npages; i++) {
+	for (i = 0; i < npages; i++) {
 
 	}
 	//////////////////////////////////////////////////////////////////////

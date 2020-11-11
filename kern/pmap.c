@@ -28,7 +28,7 @@ struct BoundaryTuple {
 	int to;
 } ;
 struct BoundaryArray {
-	int index =0;
+	int index;
 	struct BoundaryTuple boundry[10];
 } memory_notfree;
 // --------------------------------------------------------------

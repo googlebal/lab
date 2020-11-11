@@ -28,7 +28,7 @@ struct BoundaryTuple {
 	int to;
 } ;
 struct BoundaryArray {
-	int index;
+	int index =0;
 	struct BoundaryTuple boundry[10];
 } memory_notfree;
 // --------------------------------------------------------------
@@ -359,11 +359,11 @@ page_init(void)
 	kernel_pgtable.from = beginning_addr;
 	kernel_pgtable.to = now_addr;
 
-	int index;
 
-	memory_notfree.boundry[index++] = pgdir;
-	memory_notfree.boundry[index++] = iohole;
-	memory_notfree.boundry[index++] = kernel_pgtable;
+
+	memory_notfree.boundry[memory_notfree.index++] = pgdir;
+	memory_notfree.boundry[memory_notfree.index++] = iohole;
+	memory_notfree.boundry[memory_notfree.index++] = kernel_pgtable;
 	int count = 0;
 	size_t i;
 	for (i = 0; i < npages; i++) {

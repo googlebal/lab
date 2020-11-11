@@ -297,6 +297,25 @@ mem_init(void)
 	check_page_installed_pgdir();
 }
 
+// the page can be free or not
+int freeornot(int addr) {
+	int haddr = addr + PGSHIFT;
+	int i;
+	for (int i = 0; i < memory_notfree.index; i++) {
+		int from = memory_notfree.boundry[i].from;
+		int to = memory_notfree.boundry[i].to;
+		if ((addr <from && haddr<to) || (addr>from && haddr>to)) {
+			continue;
+		}
+		else {
+			return 0;
+		}
+
+	}
+	return 1;
+
+}
+
 // --------------------------------------------------------------
 // Tracking of physical pages.
 // The 'pages' array has one 'struct PageInfo' entry per physical page.
@@ -329,7 +348,7 @@ page_init(void)
 	// Change the code to reflect this.
 	// NB: DO NOT actually touch the physical memory corresponding to
 	// free pages!
-	BoundaryTuple pgdir,iohole,kernel_pgtable;
+	struct BoundaryTuple pgdir,iohole,kernel_pgtable;
 	
 	pgdir.from = 0;
 	pgdir.to = PGSIZE;
@@ -339,6 +358,8 @@ page_init(void)
 
 	kernel_pgtable.from = beginning_addr;
 	kernel_pgtable.to = now_addr;
+
+	int index;
 
 	memory_notfree.boundry[index++] = pgdir;
 	memory_notfree.boundry[index++] = iohole;
@@ -362,24 +383,7 @@ page_init(void)
 
 	cprintf("memory used %d page already", count);
 }
-// the page can be free or not
-int freeornot(int addr) {
-	int haddr = addr + PGSHIFT;
-	int i;
-	for (int i = 0; i < memory_notfree.index; i++) {
-		int from = memory_notfree.boundry[i].from;
-		int to = memory_notfree.boundry[i].to;
-		if (addr <from && haddr<to || addr>from && haddr >to) {
-			continue;
-		}
-		else {
-			return 0;
-		}
 
-	}
-	return 1;
-
-}
 //
 // Allocates a physical page.  If (alloc_flags & ALLOC_ZERO), fills the entire
 // returned physical page with '\0' bytes.  Does NOT increment the reference
@@ -395,7 +399,7 @@ int freeornot(int addr) {
 struct PageInfo *
 page_alloc(int alloc_flags)
 {
-	page2kva
+	
 	// Fill this function in
 	return 0;
 }

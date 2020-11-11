@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\boot",
+    "\\inc",
     "\\kern"
   ],
-  "SelectedNode": "\\kern\\kdebug.c",
+  "SelectedNode": "\\inc\\memlayout.h",
   "PreviewInSolutionExplorer": false
 }

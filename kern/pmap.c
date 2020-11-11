@@ -23,7 +23,14 @@ pde_t *kern_pgdir;		// Kernel's initial page directory
 struct PageInfo *pages;		// Physical page state array
 static struct PageInfo *page_free_list;	// Free list of physical pages
 
-
+struct BoundaryTuple {
+	int from;
+	int to;
+} ;
+struct BoundaryArray {
+	int index;
+	struct BoundaryTuple boundry[10];
+} memory_notfree;
 // --------------------------------------------------------------
 // Detect machine's physical memory setup.
 // --------------------------------------------------------------
@@ -126,18 +133,24 @@ boot_alloc(uint32_t n)
 	//		now_addr = 0;
 	//	}
 	//}
-	if (!terminal_addr) {
-		size_t kernel_intall = nextfree - (char *)0xf0100000;
-		size_t beginning_addr = 0x00100000;
-		size_t total_size = (npages - npages_basemem) * PGSIZE;
-		terminal_addr = beginning_addr + total_size;
-		now_addr = beginning_addr+ kernel_intall;
-	}
 	if (n == 0) {
-		result = nextfree;
-		goto next;
+		return nextfree;
 	}
-	else {
+	
+
+	if (!terminal_addr) {
+		beginning_addr = 0;
+		terminal_addr = npages * PGSIZE;
+		now_addr = 0;
+	}
+	else if (beginning_addr == 0) {
+		size_t kernel_intall = nextfree - (char*)0xf0100000- PGSIZE;
+		beginning_addr = 0x00100000;
+		now_addr = beginning_addr + kernel_intall;
+	}
+
+
+	
 		size_t available_size = terminal_addr - now_addr;
 		if (available_size >= n) {
 			now_addr += n;
@@ -147,7 +160,7 @@ boot_alloc(uint32_t n)
 		else {
 			panic("out of memory");
 		}
-	}
+
 
 
 next:
@@ -316,14 +329,57 @@ page_init(void)
 	// Change the code to reflect this.
 	// NB: DO NOT actually touch the physical memory corresponding to
 	// free pages!
+	BoundaryTuple pgdir,iohole,kernel_pgtable;
+	
+	pgdir.from = 0;
+	pgdir.to = PGSIZE;
+
+	iohole.from = IOPHYSMEM;
+	iohole.to = EXTPHYSMEM;
+
+	kernel_pgtable.from = beginning_addr;
+	kernel_pgtable.to = now_addr;
+
+	memory_notfree.boundry[index++] = pgdir;
+	memory_notfree.boundry[index++] = iohole;
+	memory_notfree.boundry[index++] = kernel_pgtable;
+	int count = 0;
 	size_t i;
 	for (i = 0; i < npages; i++) {
-		pages[i].pp_ref = 0;
+		struct PageInfo* temp = &pages[i];
+		int psyaddr = page2pa(temp);
+		int free =freeornot(psyaddr);
+		if (free) {
+			pages[i].pp_ref = 0;
+		}
+		else {
+			pages[i].pp_ref = 1;
+			count++;
+		}
 		pages[i].pp_link = page_free_list;
 		page_free_list = &pages[i];
 	}
-}
 
+	cprintf("memory used %d page already", count);
+}
+// the page can be free or not
+int freeornot(int addr) {
+	int haddr = addr + PGSHIFT;
+	int i;
+	for (int i = 0; i < memory_notfree.index; i++) {
+		int from = memory_notfree.boundry[i].from;
+		int to = memory_notfree.boundry[i].to;
+		if (addr <from && haddr<to || addr>from && haddr >to) {
+			continue;
+		}
+		else {
+			return 0;
+		}
+
+	}
+	return 1;
+
+}
 //
 // Allocates a physical page.  If (alloc_flags & ALLOC_ZERO), fills the entire
 // returned physical page with '\0' bytes.  Does NOT increment the reference
@@ -339,6 +395,7 @@ page_init(void)
 struct PageInfo *
 page_alloc(int alloc_flags)
 {
+	page2kva
 	// Fill this function in
 	return 0;
 }
